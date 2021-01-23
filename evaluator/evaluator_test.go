@@ -1,9 +1,11 @@
 package evaluator
 
 import (
+	"monkey/m/v2/ast"
 	"monkey/m/v2/lexer"
 	"monkey/m/v2/object"
 	"monkey/m/v2/parser"
+	"reflect"
 	"testing"
 )
 
@@ -205,6 +207,43 @@ func TestErrorHandling(t *testing.T) {
 	}
 }
 
+func TestFunctionObject(t *testing.T) {
+
+	tests := []struct {
+		input          string
+		expectedParams []string
+		expectedBody   string
+	}{
+		{
+			"fn(x) { x + 2; };",
+			[]string{"x"},
+			"(x + 2)",
+		},
+	}
+
+	for _, tt := range tests {
+		evaluated := testEval(tt.input)
+
+		fn, ok := evaluated.(*object.Function)
+		if !ok {
+			t.Fatalf("object is not Function. got=%T (%+v)", evaluated, evaluated)
+		}
+
+		gotParams := Map(fn.Parameters, func(v *ast.Identifier) string {
+			return v.Value
+		})
+
+		if !reflect.DeepEqual(gotParams, tt.expectedParams) {
+			t.Fatalf("function has wrong parameters. Parameters=%+v, expected=%+v",
+				fn.Parameters, tt.expectedParams)
+		}
+
+		if fn.Body.String() != tt.expectedBody {
+			t.Fatalf("body is not %q. got=%q", tt.expectedBody, fn.Body.String())
+		}
+	}
+}
+
 func testEval(input string) object.Object {
 	l := lexer.New(input)
 	p := parser.New(l)
@@ -252,4 +291,12 @@ func testNullObject(t *testing.T, obj object.Object) bool {
 	}
 
 	return true
+}
+
+func Map(vs []*ast.Identifier, f func(*ast.Identifier) string) []string {
+	vsm := make([]string, len(vs))
+	for i, v := range vs {
+		vsm[i] = f(v)
+	}
+	return vsm
 }

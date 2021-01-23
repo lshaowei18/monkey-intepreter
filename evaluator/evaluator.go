@@ -56,6 +56,8 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 		return evalIfExpression(node, env)
 	case *ast.Identifier:
 		return evalIdentifier(node, env)
+	case *ast.FunctionLiteral:
+		return evalFunctionLiteral(node, env)
 
 	default:
 		fmt.Printf("type: %T, value: %v\n", node, node)
@@ -224,6 +226,14 @@ func evalIdentifier(i *ast.Identifier, env *object.Environment) object.Object {
 		return newError("identifier not found: %s", i.Value)
 	}
 	return obj
+}
+
+func evalFunctionLiteral(fn *ast.FunctionLiteral, env *object.Environment) object.Object {
+	params := fn.Parameters
+	fmt.Printf("%T", params[0])
+	body := fn.Body
+
+	return &object.Function{Parameters: params, Env: env, Body: body}
 }
 
 func isTruthy(obj object.Object) bool {
