@@ -19,7 +19,9 @@ func TestNextToken(t *testing.T) {
 		return false;
 	}
 	10 == 10;
-	10 != 9;`
+	10 != 9;
+	"foobar";
+	"foo bar";`
 
 	tests := []struct {
 		expectedType    token.TokenType
@@ -97,6 +99,10 @@ func TestNextToken(t *testing.T) {
 		{token.INT, "10"},
 		{token.NOT_EQ, "!="},
 		{token.INT, "9"},
+		{token.SEMICOLON, ";"},
+		{token.STRING, "foobar"},
+		{token.SEMICOLON, ";"},
+		{token.STRING, "foo bar"},
 		{token.SEMICOLON, ";"},
 		{token.EOF, ""},
 	}

@@ -22,6 +22,8 @@ const (
 	ELSE     = "ELSE"
 	RETURN   = "RETURN"
 
+	STRING = "STRING"
+
 	// Boolean
 	TRUE  = "TRUE"
 	FALSE = "FALSE"

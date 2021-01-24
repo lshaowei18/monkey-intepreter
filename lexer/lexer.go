@@ -1,6 +1,7 @@
 package lexer
 
 import (
+	"fmt"
 	"monkey/m/v2/token"
 )
 
@@ -64,6 +65,9 @@ func (l *Lexer) NextToken() token.Token {
 		tok = newToken(token.COMMA, l.character)
 	case ';':
 		tok = newToken(token.SEMICOLON, l.character)
+	case '"':
+		tok.Type = token.STRING
+		tok.Literal = l.readString()
 	case 0:
 		tok.Literal = ""
 		tok.Type = token.EOF
@@ -101,6 +105,18 @@ func (l *Lexer) readIdentifier() string {
 	for isLetter(l.character) {
 		l.readChar()
 	}
+	return l.input[position:l.position]
+}
+
+func (l *Lexer) readString() string {
+	position := l.position + 1
+	for {
+		l.readChar()
+		if l.character == '"' || l.character == 0 {
+			break
+		}
+	}
+	fmt.Println(l.input[position:l.position])
 	return l.input[position:l.position]
 }
 
