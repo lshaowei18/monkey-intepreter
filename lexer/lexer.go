@@ -1,7 +1,6 @@
 package lexer
 
 import (
-	"fmt"
 	"monkey/m/v2/token"
 )
 
@@ -116,7 +115,6 @@ func (l *Lexer) readString() string {
 			break
 		}
 	}
-	fmt.Println(l.input[position:l.position])
 	return l.input[position:l.position]
 }
 
