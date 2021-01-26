@@ -17,6 +17,7 @@ const (
 	ERROR_OBJ    = "ERROR"
 	FUNCTION_OBJ = "FUNCTION"
 	STRING_OBJ   = "STRING"
+	BUILTIN      = "BUILTIN"
 )
 
 type Object interface {
@@ -132,3 +133,13 @@ func NewEnclosedEnvironment(outer *Environment) *Environment {
 	env.outer = outer
 	return env
 }
+
+type BuiltinFunction func(args ...Object) Object
+
+type BuiltIn struct {
+	Fn BuiltinFunction
+}
+
+func (b *BuiltIn) Type() ObjectType { return BUILTIN }
+
+func (b *BuiltIn) Inspect() string { return "Built in function" }

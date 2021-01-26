@@ -241,10 +241,14 @@ func evalIfExpression(ie *ast.IfExpression, env *object.Environment) object.Obje
 
 func evalIdentifier(i *ast.Identifier, env *object.Environment) object.Object {
 	obj, ok := env.Get(i.Value)
-	if !ok {
-		return newError("identifier not found: %s", i.Value)
+	if ok {
+		return obj
 	}
-	return obj
+	builtin, ok := builtins[i.Value]
+	if ok {
+		return builtin
+	}
+	return newError("identifier not found: %s", i.Value)
 }
 
 func evalFunctionLiteral(fn *ast.FunctionLiteral, env *object.Environment) object.Object {
@@ -278,14 +282,16 @@ func evalCallExpression(ce *ast.CallExpression, env *object.Environment) object.
 }
 
 func applyFunction(fn object.Object, args []object.Object) object.Object {
-	function, ok := fn.(*object.Function)
-	if !ok {
-		return newError("Not a function: %s", fn.Type())
+	switch fn := fn.(type) {
+	case *object.Function:
+		extendedEnv := extendFunctionEnv(fn, args)
+		evaluated := Eval(fn.Body, extendedEnv)
+		return evaluated
+	case *object.BuiltIn:
+		return fn.Fn(args...)
+	default:
+		return newError("not a function: %s", fn.Type())
 	}
-	extendedEnv := extendFunctionEnv(function, args)
-	evaluated := Eval(function.Body, extendedEnv)
-
-	return evaluated
 }
 
 func extendFunctionEnv(fn *object.Function, args []object.Object) *object.Environment {
