@@ -48,6 +48,9 @@ const (
 	RPAREN    = ")"
 	LBRACE    = "{"
 	RBRACE    = "}"
+
+	LBRACKET = "["
+	RBRACKET = "]"
 )
 
 var keywords = map[string]TokenType{
