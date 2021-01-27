@@ -62,6 +62,8 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 		return evalFunctionLiteral(node, env)
 	case *ast.CallExpression:
 		return evalCallExpression(node, env)
+	case *ast.ArrayLiteral:
+		return evalArrayLiteral(node, env)
 
 	default:
 		fmt.Printf("type: %T, value: %v\n", node, node)
@@ -256,6 +258,14 @@ func evalFunctionLiteral(fn *ast.FunctionLiteral, env *object.Environment) objec
 	body := fn.Body
 
 	return &object.Function{Parameters: params, Env: env, Body: body}
+}
+
+func evalArrayLiteral(array *ast.ArrayLiteral, env *object.Environment) object.Object {
+	elements := evalExpressions(array.Elements, env)
+	if len(elements) == 1 && isError(elements[0]) {
+		return elements[0]
+	}
+	return &object.Array{Elements: elements}
 }
 
 func evalExpressions(exps []ast.Expression, env *object.Environment) []object.Object {
