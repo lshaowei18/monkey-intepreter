@@ -334,11 +334,23 @@ func TestBuiltinFunction(t *testing.T) {
 		input    string
 		expected interface{}
 	}{
+		// len
 		{`len("")`, 0},
 		{`len("four")`, 4},
 		{`len("hello world")`, 11},
 		{`len(1)`, "argument to `len` not supported, got=INTEGER"},
 		{`len("one", "two")`, "wrong number of arguments. got=2, want=1"},
+		{"len([1, 2, 3])", 3},
+		// first
+		{"first([0+1, 2, 3])", 1},
+		{"first(1)", "argument to `first` not supported, got=INTEGER"},
+		// last
+		{"last([0+1, 2, 3])", 3},
+		{"last(1)", "argument to `last` not supported, got=INTEGER"},
+		// rest
+		{"rest([0+1, 2, 3])", []int64{2, 3}},
+		// push
+		{"push([1, 2, 3], 4)", []int64{1, 2, 3, 4}},
 	}
 
 	for _, tt := range tests {
@@ -354,6 +366,16 @@ func TestBuiltinFunction(t *testing.T) {
 			}
 			if errObj.Message != expected {
 				t.Errorf("wrong error message. expected=%q, got=%q", expected, errObj.Message)
+			}
+		case []int64:
+			arr, ok := evaluated.(*object.Array)
+			if !ok {
+				t.Errorf("object is not Array. got=%T (%+v)", evaluated, evaluated)
+				continue
+			}
+
+			for i, element := range arr.Elements {
+				testIntegerObject(t, element, expected[i])
 			}
 		}
 	}
