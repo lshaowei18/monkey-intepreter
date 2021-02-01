@@ -566,7 +566,6 @@ func TestParsingArrayLiteral(t *testing.T) {
 
 func TestParsingHashLiterals(t *testing.T) {
 	input := `{"one": 1, "two": 2, "three": 3}`
-
 	program := testProgram(t, input)
 	if len(program.Statements) != 1 {
 		t.Fatalf("program.Statements does not contain %d statements. got=%d\n",
