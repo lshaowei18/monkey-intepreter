@@ -1,0 +1,58 @@
+package ast
+
+import (
+	"reflect"
+	"testing"
+)
+
+func TestModify(t *testing.T) {
+	one := func() Expression { return &IntegerLiteral{Value: 1} }
+	two := func() Expression { return &IntegerLiteral{Value: 2} }
+
+	tests := []struct {
+		input    Node
+		expected Node
+	}{
+		{
+			one(),
+			two(),
+		},
+		{
+			&Program{
+				Statements: []Statement{
+					&ExpressionStatement{Expression: one()},
+				},
+			},
+			&Program{
+				Statements: []Statement{
+					&ExpressionStatement{Expression: two()},
+				},
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		modified := Modify(tt.input, turnOneIntoTwo)
+
+		if !reflect.DeepEqual(modified, tt.expected) {
+			t.Errorf("not equal. got=%#v, want=%#v",
+				modified, tt.expected)
+		}
+	}
+}
+
+func turnOneIntoTwo(node Node) Node {
+	integer, ok := node.(*IntegerLiteral)
+
+	if !ok {
+		return node
+	}
+
+	if integer.Value != 1 {
+		return node
+	}
+
+	integer.Value = 2
+
+	return integer
+}
