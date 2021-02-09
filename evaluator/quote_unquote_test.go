@@ -23,8 +23,20 @@ func TestQuote(t *testing.T) {
 			`(foobar + barfoo)`,
 		},
 		{
+			`quote(unquote(4))`,
+			`4`,
+		},
+		{
+			`quote(unquote(4 + 4))`,
+			`8`,
+		},
+		{
 			`quote(8 + unquote(4 + 4))`,
 			`8 + 8`,
+		},
+		{
+			`quote(unquote(4 + 4) + 8)`,
+			`(8 + 8)`,
 		},
 	}
 
