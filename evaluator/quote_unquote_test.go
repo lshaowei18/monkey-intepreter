@@ -40,12 +40,12 @@ func TestQuote(t *testing.T) {
 		},
 		{
 			`let foobar = 8;
-            quote(foobar)`,
+		    quote(foobar)`,
 			`foobar`,
 		},
 		{
 			`let foobar = 8;
-            quote(unquote(foobar))`,
+		    quote(unquote(foobar))`,
 			`8`,
 		},
 		{
@@ -55,6 +55,11 @@ func TestQuote(t *testing.T) {
 		{
 			`quote(unquote(true == false))`,
 			`false`,
+		},
+		{
+			`let quotedInfixExpression = quote(4 + 4);
+            quote(unquote(4 + 4) + unquote(quotedInfixExpression))`,
+			`(8 + (4 + 4))`,
 		},
 	}
 
