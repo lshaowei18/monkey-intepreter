@@ -24,6 +24,9 @@ const (
 
 	STRING = "STRING"
 
+	// Macros
+	MACRO = "MACRO"
+
 	// Boolean
 	TRUE  = "TRUE"
 	FALSE = "FALSE"
@@ -63,6 +66,7 @@ var keywords = map[string]TokenType{
 	"return": RETURN,
 	"true":   TRUE,
 	"false":  FALSE,
+	"macro":  MACRO,
 }
 
 // Check if a string is a keyword or identifier

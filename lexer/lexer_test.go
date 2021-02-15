@@ -23,7 +23,8 @@ func TestNextToken(t *testing.T) {
 	"foobar";
 	"foo bar";
 	[1,2,"hi"];
-	{"name":"Jimmy", "age": 72};`
+	{"name":"Jimmy", "age": 72};
+	macro(x, y) { x + y; }`
 
 	tests := []struct {
 		expectedType    token.TokenType
@@ -124,6 +125,18 @@ func TestNextToken(t *testing.T) {
 		{token.INT, "72"},
 		{token.RBRACE, "}"},
 		{token.SEMICOLON, ";"},
+		{token.MACRO, "macro"},
+		{token.LPAREN, "("},
+		{token.IDENT, "x"},
+		{token.COMMA, ","},
+		{token.IDENT, "y"},
+		{token.RPAREN, ")"},
+		{token.LBRACE, "{"},
+		{token.IDENT, "x"},
+		{token.PLUS, "+"},
+		{token.IDENT, "y"},
+		{token.SEMICOLON, ";"},
+		{token.RBRACE, "}"},
 		{token.EOF, ""},
 	}
 
