@@ -78,6 +78,9 @@ func New(l *lexer.Lexer) *Parser {
 	// {"hi": 1}
 	p.registerPrefix(token.LBRACE, p.parseHashLiteral)
 
+	// Macro
+	p.registerPrefix(token.MACRO, p.parseMacroLiteral)
+
 	// example: 3 + 3 , 1 != 1
 	p.infixParseFns = make(map[token.TokenType]infixParseFn)
 
@@ -451,6 +454,22 @@ func (p *Parser) parseExpressionHash() map[ast.Expression]ast.Expression {
 		pairs[k] = v
 	}
 	return pairs
+}
+
+func (p *Parser) parseMacroLiteral() ast.Expression {
+	exp := &ast.MacroLiteral{Token: p.curToken}
+
+	if !p.expectPeek(token.LPAREN) {
+		return nil
+	}
+
+	exp.Parameters = p.parseFunctionParameters()
+
+	p.nextToken()
+
+	exp.Body = p.parseBlockStatement()
+
+	return exp
 }
 
 func (p *Parser) peekTokenIs(t token.TokenType) bool {
