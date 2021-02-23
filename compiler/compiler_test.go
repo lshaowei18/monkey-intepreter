@@ -90,7 +90,6 @@ func concatInstructions(s []code.Instructions) code.Instructions {
 	for _, ins := range s {
 		out = append(out, ins...)
 	}
-
 	return out
 }
 
