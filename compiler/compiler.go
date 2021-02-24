@@ -1,7 +1,6 @@
 package compiler
 
 import (
-	"fmt"
 	"monkey/m/v2/ast"
 	"monkey/m/v2/code"
 	"monkey/m/v2/object"
@@ -25,7 +24,6 @@ func New() *Compiler {
 }
 
 func (c *Compiler) Compile(node ast.Node) error {
-	fmt.Println(node)
 	switch node := node.(type) {
 	case *ast.Program:
 		for _, s := range node.Statements {

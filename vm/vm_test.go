@@ -15,7 +15,7 @@ type vmTestCase struct {
 	expected interface{}
 }
 
-func testIntegerArithmetic(t *testing.T) {
+func TestIntegerArithmetic(t *testing.T) {
 	tests := []vmTestCase{
 		{"1", 1},
 		{"2", 2},
