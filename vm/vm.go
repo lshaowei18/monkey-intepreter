@@ -50,6 +50,11 @@ func (vm *VM) Run() error {
 			if err != nil {
 				return err
 			}
+		case code.OpSub:
+			err := vm.handleSub()
+			if err != nil {
+				return err
+			}
 		case code.OpPop:
 			vm.pop()
 		}
@@ -72,6 +77,18 @@ func (vm *VM) handleAdd() error {
 	rightValue := right.(*object.Integer).Value
 
 	result := leftValue + rightValue
+	err := vm.push(&object.Integer{Value: result})
+	return err
+}
+
+func (vm *VM) handleSub() error {
+	right := vm.pop()
+	left := vm.pop()
+
+	leftValue := left.(*object.Integer).Value
+	rightValue := right.(*object.Integer).Value
+
+	result := leftValue - rightValue
 	err := vm.push(&object.Integer{Value: result})
 	return err
 }

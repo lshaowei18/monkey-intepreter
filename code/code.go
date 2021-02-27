@@ -14,6 +14,7 @@ const (
 	OpConstant Opcode = iota
 	OpAdd
 	OpPop
+	OpSub
 )
 
 type Definition struct {
@@ -25,6 +26,7 @@ var definitions = map[Opcode]*Definition{
 	OpConstant: {"OpConstant", []int{2}},
 	OpAdd:      {"OpAdd", []int{}},
 	OpPop:      {"OpPop", []int{}},
+	OpSub:      {"OpSub", []int{}},
 }
 
 func calculateInstructionLen(def *Definition) int {
