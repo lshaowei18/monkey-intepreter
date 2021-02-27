@@ -40,27 +40,40 @@ func (vm *VM) Run() error {
 
 		switch op {
 		case code.OpConstant:
-			constIndex := code.ReadUint16(vm.instructions[ip+1:])
-			ip += 2
-
-			err := vm.push(vm.constants[constIndex])
+			err := vm.handleConstant(ip)
 			if err != nil {
 				return err
 			}
+			ip += 2
 		case code.OpAdd:
-			right := vm.pop()
-			left := vm.pop()
-
-			leftValue := left.(*object.Integer).Value
-			rightValue := right.(*object.Integer).Value
-
-			result := leftValue + rightValue
-			vm.push(&object.Integer{Value: result})
+			err := vm.handleAdd()
+			if err != nil {
+				return err
+			}
 		case code.OpPop:
 			vm.pop()
 		}
 	}
 	return nil
+}
+
+func (vm *VM) handleConstant(ip int) error {
+	constIndex := code.ReadUint16(vm.instructions[ip+1:])
+
+	err := vm.push(vm.constants[constIndex])
+	return err
+}
+
+func (vm *VM) handleAdd() error {
+	right := vm.pop()
+	left := vm.pop()
+
+	leftValue := left.(*object.Integer).Value
+	rightValue := right.(*object.Integer).Value
+
+	result := leftValue + rightValue
+	err := vm.push(&object.Integer{Value: result})
+	return err
 }
 
 func (vm *VM) push(o object.Object) error {
