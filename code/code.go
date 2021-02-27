@@ -15,6 +15,7 @@ const (
 	OpAdd
 	OpPop
 	OpSub
+	OpMul
 )
 
 type Definition struct {
@@ -27,6 +28,7 @@ var definitions = map[Opcode]*Definition{
 	OpAdd:      {"OpAdd", []int{}},
 	OpPop:      {"OpPop", []int{}},
 	OpSub:      {"OpSub", []int{}},
+	OpMul:      {"OpMul", []int{}},
 }
 
 func calculateInstructionLen(def *Definition) int {
