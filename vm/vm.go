@@ -17,6 +17,9 @@ type VM struct {
 	sp    int // StackPointer. Always points to the next value. Top of the stack is stack[sp-1]
 }
 
+var True = &object.Boolean{Value: true}
+var False = &object.Boolean{Value: false}
+
 func New(bytecode *compiler.Bytecode) *VM {
 	return &VM{
 		instructions: bytecode.Instructions,
@@ -47,6 +50,11 @@ func (vm *VM) Run() error {
 			ip += 2
 		case code.OpAdd, code.OpSub, code.OpMul, code.OpDiv:
 			err := vm.executeBinaryOperation(op)
+			if err != nil {
+				return err
+			}
+		case code.OpTrue, code.OpFalse:
+			err := vm.executeBooleanOp(op)
 			if err != nil {
 				return err
 			}
@@ -98,6 +106,13 @@ func (vm *VM) handleConstant(ip int) error {
 
 	err := vm.push(vm.constants[constIndex])
 	return err
+}
+
+func (vm *VM) executeBooleanOp(op code.Opcode) error {
+	if op == code.OpTrue {
+		return vm.push(True)
+	}
+	return vm.push(False)
 }
 
 func (vm *VM) push(o object.Object) error {
