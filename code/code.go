@@ -19,6 +19,7 @@ const (
 	OpDiv
 	OpTrue
 	OpFalse
+	OpEqual
 )
 
 type Definition struct {
@@ -35,6 +36,7 @@ var definitions = map[Opcode]*Definition{
 	OpDiv:      {"OpDiv", []int{}},
 	OpTrue:     {"OpTrue", []int{}},
 	OpFalse:    {"OpFalse", []int{}},
+	OpEqual:    {"OpEqual", []int{}},
 }
 
 func calculateInstructionLen(def *Definition) int {

@@ -53,6 +53,11 @@ func (vm *VM) Run() error {
 			if err != nil {
 				return err
 			}
+		case code.OpEqual:
+			err := vm.executeComparison(op)
+			if err != nil {
+				return err
+			}
 		case code.OpTrue, code.OpFalse:
 			err := vm.executeBooleanOp(op)
 			if err != nil {
@@ -63,6 +68,38 @@ func (vm *VM) Run() error {
 		}
 	}
 	return nil
+}
+
+func (vm *VM) executeComparison(op code.Opcode) error {
+	right := vm.pop()
+	left := vm.pop()
+
+	leftType := left.Type()
+	rightType := right.Type()
+
+	if leftType == object.INTEGER_OBJ && rightType == object.INTEGER_OBJ {
+		return vm.executeIntegerComparison(op, left, right)
+	}
+
+	switch op {
+	case code.OpEqual:
+		return vm.push(nativeBoolToBooleanObject(right == left))
+	}
+
+	return nil
+}
+
+func (vm *VM) executeIntegerComparison(op code.Opcode, left, right object.Object) error {
+	leftValue := left.(*object.Integer).Value
+	rightValue := right.(*object.Integer).Value
+
+	var result bool
+
+	switch op {
+	case code.OpEqual:
+		result = leftValue == rightValue
+	}
+	return vm.push(nativeBoolToBooleanObject(result))
 }
 
 func (vm *VM) executeBinaryOperation(op code.Opcode) error {
@@ -134,4 +171,11 @@ func (vm *VM) pop() object.Object {
 
 func (vm *VM) LastPoppedStackElem() object.Object {
 	return vm.stack[vm.sp]
+}
+
+func nativeBoolToBooleanObject(b bool) object.Object {
+	if b == true {
+		return True
+	}
+	return False
 }
